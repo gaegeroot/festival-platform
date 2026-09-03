@@ -1,0 +1,21 @@
+{
+  "name": "festival",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run db:setup && bun run --parallel --filter '*' dev",
+    "db:setup": "bun run --cwd apps/api db:setup",
+    "db:reset": "bun run --cwd apps/api db:reset"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^7"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

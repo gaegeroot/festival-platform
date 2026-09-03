@@ -1,0 +1,26 @@
+{
+  "name": "@festival/api",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "bun run src/db/seed.ts",
+    "db:setup": "bun run db:migrate && bun run db:seed",
+    "db:reset": "bun run src/db/reset.ts && bun run db:setup"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.31.10",
+    "@libsql/client": "^0.18.0"
+  },
+  "peerDependencies": {
+    "typescript": "^7"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "drizzle-orm": "^0.45.2",
+    "hono": "^4.13.5"
+  }
+}
