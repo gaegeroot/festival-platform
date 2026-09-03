@@ -1,4 +1,4 @@
-# festival
+# api
 
 To install dependencies:
 
