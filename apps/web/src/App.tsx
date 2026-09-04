@@ -1,177 +1,98 @@
 import { useEffect, useState } from 'react'
-
-import heroImg from './assets/hero.png'
-
-import reactLogo from './assets/react.svg'
-
-import viteLogo from './assets/vite.svg'
-
+import { getFestival, getFestivals } from './api/festivals'
+import type { Festival, FestivalSummary } from '@festival/contracts'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  const [apiData, setApiData] = useState<unknown>(null)
-  const [apiError, setApiError] = useState<string | null>(null)
+  const [festivals, setFestivals] = useState<FestivalSummary[]>([])
+  const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/festivals')
+    getFestivals()
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Request failed: ${response.status}`)
-        }
-
-        return response.json()
+        setFestivals(response.data)
       })
-      .then(setApiData)
-      .catch((error) => {
-        setApiError(
-          error instanceof Error ? error.message : 'Request failed',
-        )
+      .catch(() => {
+        setError('Unable to load festivals.')
+      })
+      .finally(() => {
+        setLoading(false)
       })
   }, [])
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img
-            src={heroImg}
-            className="base"
-            width="170"
-            height="179"
-            alt=""
-          />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+  async function handleFestivalSelect(festivalId: string) {
+    setError(null)
+    setSelectedFestival(null)
+    setLoading(true)
 
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
+    try {
+      const response = await getFestival(festivalId)
+      setSelectedFestival(response.data)
+    } catch {
+      setError('Unable to load festival.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
+  if (loading && !selectedFestival) {
+    return <p>Loading...</p>
+  }
+
+  if (error) {
+    return <p>{error}</p>
+  }
+
+  if (selectedFestival) {
+    return (
+      <main>
+        <button onClick={() => setSelectedFestival(null)}>
+          ← Back to festivals
         </button>
-      </section>
 
-      <div className="ticks"></div>
+        <h1>{selectedFestival.name}</h1>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
+        <p>
+          {selectedFestival.startTime} → {selectedFestival.endTime}
+        </p>
 
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
+        {selectedFestival.stages.map((stage) => (
+          <section key={stage.id}>
+            <h2>{stage.name}</h2>
 
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
+            <ul>
+              {stage.sets.map((set) => (
+                <li key={set.id}>
+                  <strong>{set.artist.name}</strong>
+                  <span>
+                    {set.startTime} → {set.endTime}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </main>
+    )
+  }
 
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
+  return (
+    <main>
+      <h1>Festivals</h1>
 
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="api-data">
-        <h2>Festival API</h2>
-
-        {apiError && <p>Error: {apiError}</p>}
-
-        {!apiError && apiData === null && <p>Loading...</p>}
-
-        {apiData !== null && (
-          <pre>{JSON.stringify(apiData, null, 2)}</pre>
-        )}
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="spacer"></section>
-    </>
+      <ul>
+        {festivals.map((festival) => (
+          <li key={festival.id}>
+            <button onClick={() => handleFestivalSelect(festival.id)}>
+              <strong>{festival.name}</strong>
+              <span>{festival.startTime}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </main>
   )
 }
 
