@@ -54,6 +54,22 @@ The development command automatically:
 * **API:** [http://localhost:3000](http://localhost:3000)
 * **API health check:** [http://localhost:3000/api/health](http://localhost:3000/api/health)
 
+## Frontend
+
+The frontend application lives in:
+
+```text
+apps/web/
+```
+
+Frontend source code is located in:
+
+```text
+apps/web/src/
+```
+
+The frontend runs on Vite and communicates with the local Hono API through the `/api` development proxy.
+
 ## Database
 
 The local development database is a SQLite file located at:
@@ -66,11 +82,11 @@ The database is intentionally **not committed to Git**. It is created automatica
 
 ### Database Commands
 
-| Command            | Purpose                                                   |
-| ------------------ | --------------------------------------------------------- |
-| `bun run db:setup` | Apply migrations and seed an empty database               |
-| `bun run db:reset` | Delete the local database, recreate it, and seed it       |
-| `bun run dev`      | Set up the database and start the development environment |
+| Command | Purpose |
+| --- | --- |
+| `bun run db:setup` | Apply migrations and seed an empty database |
+| `bun run db:reset` | Delete the local database, recreate it, and seed it |
+| `bun run dev` | Set up the database and start the development environment |
 
 ### Schema Changes
 
@@ -93,20 +109,55 @@ Migration files are committed to the repository so every developer and environme
 ```text
 festival/
 ├── apps/
-│   ├── api/          # Hono API
+│   ├── api/              # Hono API
 │   │   ├── src/
-│   │   │   ├── db/   # Database client, schema, and seed
-│   │   │   └── routes/
-│   │   └── drizzle/  # Database migrations
+│   │   │   ├── db/       # Database client, schema, seed, and reset
+│   │   │   └── routes/   # API routes
+│   │   └── drizzle/      # Database migrations
 │   │
-│   └── web/          # React frontend
+│   └── web/              # React frontend
+│       └── src/          # Frontend source code
 │
-├── packages/         # Shared packages
-│   └── contracts/
+├── packages/             # Shared packages
+│   └── contracts/        # Shared API contracts
 │
-├── package.json      # Workspace configuration and root scripts
-└── bun.lock          # Root dependency lockfile
+├── package.json          # Workspace configuration and root scripts
+└── bun.lock              # Root dependency lockfile
 ```
+
+## Git Workflow
+
+The `main` branch is the protected default branch. Changes should be made through pull requests rather than directly on `main`.
+
+### Branch Naming
+
+Create a branch using a prefix that describes the type of work:
+
+```text
+feat/       New functionality
+fix/        Bug fixes
+chore/      Tooling, configuration, or maintenance
+refactor/   Code restructuring
+docs/       Documentation
+test/       Tests
+```
+
+For example:
+
+```bash
+git checkout -b feat/festival-search
+```
+
+### Pull Requests
+
+1. Create a feature branch from `main`
+2. Make and commit your changes
+3. Push the branch to GitHub
+4. Open a pull request against `main`
+5. Have another contributor review and approve the PR
+6. Merge the PR into `main`
+
+Direct pushes to `main` should be avoided.
 
 ## Development Workflow
 
@@ -122,9 +173,15 @@ Start the application:
 bun run dev
 ```
 
-Make your changes, then commit and open a pull request against `main`.
+Make your changes, then commit and push your branch:
 
-The `main` branch is protected and changes should be made through pull requests.
+```bash
+git add .
+git commit -m "feat: describe the change"
+git push -u origin feat/my-feature
+```
+
+Open a pull request against `main` when the work is ready for review.
 
 ## Useful Commands
 
