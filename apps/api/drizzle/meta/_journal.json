@@ -8,6 +8,13 @@
       "when": 1788474484244,
       "tag": "0000_legal_vermin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1788485537993,
+      "tag": "0001_red_hannibal_king",
+      "breakpoints": true
     }
   ]
 }

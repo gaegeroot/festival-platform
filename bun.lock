@@ -14,6 +14,7 @@
     "apps/api": {
       "name": "@festival/api",
       "dependencies": {
+        "@festival/contracts": "workspace:*",
         "@libsql/client": "^0.18.0",
         "drizzle-orm": "^0.45.2",
         "hono": "^4.13.5",
@@ -31,6 +32,7 @@
       "name": "@festival/web",
       "version": "0.0.0",
       "dependencies": {
+        "@festival/contracts": "workspace:*",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
       },
@@ -47,6 +49,18 @@
         "typescript": "~6.0.2",
         "typescript-eslint": "^8.67.0",
         "vite": "^8.2.2",
+      },
+    },
+    "packages/contracts": {
+      "name": "@festival/contracts",
+      "dependencies": {
+        "zod": "^4.5.4",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "typescript": "^7",
       },
     },
   },
@@ -158,6 +172,8 @@
     "@eslint/plugin-kit": ["@eslint/plugin-kit@0.7.3", "", { "dependencies": { "@eslint/core": "^1.2.1", "levn": "^0.4.1" } }, "sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q=="],
 
     "@festival/api": ["@festival/api@workspace:apps/api"],
+
+    "@festival/contracts": ["@festival/contracts@workspace:packages/contracts"],
 
     "@festival/web": ["@festival/web@workspace:apps/web"],
 
