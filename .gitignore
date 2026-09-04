@@ -35,3 +35,11 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # DB & Data
 apps/api/data/*.sqlite
+
+# infrastructure
+infra/**/.terraform/
+infra/**/terraform.tfstate
+infra/**/terraform.tfstate.*
+infra/**/crash.log
+infra/**/crash.*.log
+infra/environments/*/terraform.tfvars
